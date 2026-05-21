@@ -58,7 +58,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ cartCount = 0, onSearchChan
           <Link href="/" className="flex min-w-0 shrink-0 items-center gap-3">
             <AppLogo size={38} className="h-9 w-9 sm:h-10 sm:w-10" />
             <span className="max-w-[10rem] truncate whitespace-nowrap text-sm font-bold text-[#166534] sm:max-w-[12rem] sm:text-lg">
-              PIONE 
+              PIONE GROUP
             </span>
           </Link>
 
