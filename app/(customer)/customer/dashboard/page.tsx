@@ -14,7 +14,7 @@ export default function CustomerDashboardPage() {
     <main className="space-y-4 pb-8">
       <PageHeader
         eyebrow="Tài khoản khách hàng"
-        title="Xin chào, Lê Khánh Hàng"
+        title="Xin chào, Tạ Thị Khách Hàng!"
         description="Quản lý mua hàng, địa chỉ giao nhận và sản phẩm yêu thích của bạn."
         actions={
           <Link href="/products">
