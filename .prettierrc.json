@@ -1,0 +1,36 @@
+{
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "jsxSingleQuote": false,
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+
+# 1. Kiểm tra xem repo có tồn tại không
+# Mở trình duyệt: https://github.com/Mohick/Quan_Ly_Nong_San_Fe
+
+# 2. Nếu repo là private, đăng nhập trước
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+# 3. Thử clone lại với SSH (nếu có SSH key)
+git clone git@github.com:Mohick/Quan_Ly_Nong_San_Fe.git
+
+# 4. Hoặc thử với HTTPS + token
+# Git sẽ yêu cầu token thay vì password
+git clone https://github.com/Mohick/Quan_Ly_Nong_San_Fe.git
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+# Nhấp phải trong thư mục → "Git Bash Here"
+# Hoặc mở Git Bash từ Start Menu
+
+# Rồi chạy lệnh SSH:
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+git clone git@github.com:Mohick/Quan_Ly_Nong_San_Fe.git
