@@ -67,10 +67,10 @@ export default function HomePage() {
             <div className="relative">
               <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[1.35rem] border border-[#A7E7B8] bg-white shadow-lg shadow-green-900/12 sm:aspect-[4/3]">
                 <Image
-                  src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=600&fit=crop"
+                  src="/images/photos/hero-farm-vietnam.jpg"
                   alt="Nông sản"
                   fill
-                  priority
+                  preload
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#12351F]/30 via-transparent to-transparent" />

@@ -2,7 +2,7 @@
 export const mockProducts = [
   {
     id: '1',
-    image: 'https://images.unsplash.com/photo-1464618666106-factcbf60008?w=500&h=500&fit=crop',
+    image: '/images/photos/product-tomato.jpg',
     name: 'Cà chua hữu cơ tươi',
     price: 45000,
     originalPrice: 55000,
@@ -15,7 +15,7 @@ export const mockProducts = [
   },
   {
     id: '2',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=500&fit=crop',
+    image: '/images/photos/product-kale.jpg',
     name: 'Rau cải xoăn tươi',
     price: 25000,
     farm: 'Vườn Xanh 2',
@@ -27,7 +27,7 @@ export const mockProducts = [
   },
   {
     id: '3',
-    image: 'https://images.unsplash.com/photo-1488459716781-6c3571ff8a32?w=500&h=500&fit=crop',
+    image: '/images/photos/product-strawberry.jpg',
     name: 'Dâu tây tươi',
     price: 85000,
     originalPrice: 100000,
@@ -40,7 +40,7 @@ export const mockProducts = [
   },
   {
     id: '4',
-    image: 'https://images.unsplash.com/photo-1599599810694-b3b3dd9c4b6b?w=500&h=500&fit=crop',
+    image: '/images/photos/product-papaya.jpg',
     name: 'Đu đủ vàng tươi',
     price: 35000,
     farm: 'Vườn Miền Tây',
@@ -52,7 +52,7 @@ export const mockProducts = [
   },
   {
     id: '5',
-    image: 'https://images.unsplash.com/photo-1565017453574-36f3605b0601?w=500&h=500&fit=crop',
+    image: '/images/photos/product-carrot.jpg',
     name: 'Cà rốt tươi',
     price: 20000,
     farm: 'Vườn Xanh 3',
@@ -68,7 +68,7 @@ export const mockProducts = [
 export const mockFarms = [
   {
     id: 'farm1',
-    image: 'https://images.unsplash.com/photo-1500147009997-b8551bb90c4d?w=500&h=400&fit=crop',
+    image: '/images/photos/farm-greenhouse.jpg',
     name: 'Vườn Xanh 1',
     owner: 'Nguyễn Văn A',
     region: 'Hà Nội',
@@ -78,7 +78,7 @@ export const mockFarms = [
   },
   {
     id: 'farm2',
-    image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=500&h=400&fit=crop',
+    image: '/images/photos/farm-rice-vietnam.jpg',
     name: 'Vườn Ngọt',
     owner: 'Trần Thị B',
     region: 'Đà Lạt',
@@ -88,7 +88,7 @@ export const mockFarms = [
   },
   {
     id: 'farm3',
-    image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=500&h=400&fit=crop',
+    image: '/images/photos/farm-paddy-vietnam.jpg',
     name: 'Vườn Miền Tây',
     owner: 'Phạm Văn C',
     region: 'Cần Thơ',
@@ -102,7 +102,7 @@ export const mockFarms = [
 export const mockVideos = [
   {
     id: 'vid1',
-    thumbnail: 'https://images.unsplash.com/photo-1464618666106-factcbf60008?w=500&h=300&fit=crop',
+    thumbnail: '/images/photos/product-tomato.jpg',
     title: 'Hướng dẫn trồng cà chua hữu cơ',
     description: 'Quy trình từ giống đến thu hoạch',
     duration: '15:30',
@@ -110,7 +110,7 @@ export const mockVideos = [
   },
   {
     id: 'vid2',
-    thumbnail: 'https://images.unsplash.com/photo-1488459716781-6c3571ff8a32?w=500&h=300&fit=crop',
+    thumbnail: '/images/photos/product-strawberry.jpg',
     title: 'Kỹ thuật chăm sóc dâu tây',
     description: 'Để có năng suất cao nhất',
     duration: '12:45',
@@ -274,7 +274,7 @@ export const mockCartItems = [
     name: 'Cà chua hữu cơ tươi',
     price: 45000,
     quantity: 2,
-    image: 'https://images.unsplash.com/photo-1464618666106-factcbf60008?w=100&h=100&fit=crop',
+    image: '/images/photos/product-tomato.jpg',
   },
   {
     id: '3',
@@ -282,7 +282,7 @@ export const mockCartItems = [
     name: 'Dâu tây tươi',
     price: 85000,
     quantity: 1,
-    image: 'https://images.unsplash.com/photo-1488459716781-6c3571ff8a32?w=100&h=100&fit=crop',
+    image: '/images/photos/product-strawberry.jpg',
   },
 ];
 
@@ -294,28 +294,28 @@ export const mockUsers = {
     email: 'farmer@example.com',
     role: 'farmer',
     farms: ['farm1'],
-    avatar: 'https://i.pravatar.cc/150?img=1',
+    avatar: '/images/photos/avatar-farmer.jpg',
   },
   trader: {
     id: 'trader1',
     name: 'Trần Thị B',
     email: 'trader@example.com',
     role: 'trader',
-    avatar: 'https://i.pravatar.cc/150?img=2',
+    avatar: '/images/photos/avatar-trader.jpg',
   },
   seller: {
     id: 'seller1',
     name: 'Phạm Văn C',
     email: 'seller@example.com',
     role: 'seller',
-    avatar: 'https://i.pravatar.cc/150?img=3',
+    avatar: '/images/photos/avatar-seller.jpg',
   },
   admin: {
     id: 'admin1',
     name: 'Admin',
     email: 'admin@example.com',
     role: 'admin',
-    avatar: 'https://i.pravatar.cc/150?img=4',
+    avatar: '/images/photos/avatar-admin.jpg',
   },
 };
 
