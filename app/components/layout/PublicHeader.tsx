@@ -43,7 +43,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ cartCount = 0, onSearchChan
     { label: 'Trang chủ', href: '/' },
     { label: 'Sản phẩm', href: '/products' },
     { label: 'Nhà vườn', href: '/farms' },
-    { label: 'Quy trình trồng', href: '/guides' },
+    { label: 'Tin tức', href: '/guides' },
     { label: 'Theo dõi đơn', href: '/orders' },
     { label: 'Hỗ trợ', href: '/support' },
     { label: 'Cổng vận hành', href: '/dashboard' },

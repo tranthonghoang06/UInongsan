@@ -4,7 +4,6 @@ import PageHeader from '@/app/components/layout/PageHeader';
 import Badge from '@/app/components/ui/Badge';
 import { mockCustomerAddresses } from '@/app/data/mockData';
 import { MapPin, Phone, UserRound } from 'lucide-react';
-
 export default function CustomerAddressesPage() {
   return (
     <main className="space-y-4 pb-8">

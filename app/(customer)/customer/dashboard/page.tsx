@@ -25,7 +25,6 @@ export default function CustomerDashboardPage() {
           </Link>
         }
       />
-
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-[#BBF7D0] bg-white p-3.5 shadow-sm shadow-green-100">
           <PackageCheck className="h-5 w-5 text-[#16A34A]" />
@@ -47,7 +46,6 @@ export default function CustomerDashboardPage() {
           <p className="text-2xl font-bold text-[#163B24]">{mockWishlist.length}</p>
         </div>
       </section>
-
       <section className="rounded-2xl border border-[#BBF7D0] bg-white p-3.5 shadow-sm shadow-green-100 sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>

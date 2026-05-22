@@ -4,7 +4,6 @@ import PageHeader from '@/app/components/layout/PageHeader';
 import StatusBadge from '@/app/components/ui/StatusBadge';
 import { mockOrders } from '@/app/data/mockData';
 import { formatCurrency } from '@/utils';
-
 export default function CustomerOrdersPage() {
   return (
     <main className="space-y-4 pb-8">
