@@ -6,6 +6,7 @@ import Image from 'next/image';
 import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
 import { Star, Heart, Share2, ShoppingCart, Calendar, MapPin, Leaf, Award } from 'lucide-react';
 import { mockProducts, mockFarms } from '@/app/data/mockData';
 
@@ -15,6 +16,7 @@ interface ProductDetailPageProps {
 
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const id = React.use(params).id;
+  const toast = useToast();
   const product = mockProducts.find(p => p.id === id);
   const farm = mockFarms[0];
   const [quantity, setQuantity] = useState(1);
@@ -33,6 +35,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
   const handleAddToCart = () => {
     setCartCount(prev => prev + quantity);
+    toast.success({ title: 'Đã thêm vào giỏ hàng', message: `${quantity} x ${product?.name ?? 'Sản phẩm'} đã được thêm.` });
+  };
+
+  const handleQuantityChange = (nextQuantity: number) => {
+    const safeQuantity = Math.max(1, nextQuantity);
+    setQuantity(safeQuantity);
+    toast.info({ title: 'Đã cập nhật số lượng', message: `${safeQuantity} sản phẩm` });
   };
 
   return (
@@ -129,14 +138,16 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                 <span className="text-sm font-medium">Số lượng:</span>
                 <div className="flex items-center gap-3 rounded-2xl border border-[#BBF7D0] bg-white px-4 py-2">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={() => handleQuantityChange(quantity - 1)}
+                    type="button"
                     className="flex h-10 w-10 items-center justify-center text-2xl text-[#16A34A] hover:font-bold"
                   >
                     −
                   </button>
                   <span className="w-8 text-center font-medium">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => handleQuantityChange(quantity + 1)}
+                    type="button"
                     className="flex h-10 w-10 items-center justify-center text-2xl text-[#16A34A] hover:font-bold"
                   >
                     +
@@ -155,12 +166,12 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
                   <ShoppingCart className="h-5 w-5" />
                   Thêm vào giỏ
                 </Button>
-                <Button variant="outline" size="md">
+                <Button variant="outline" size="md" onClick={() => toast.success({ title: 'Đã lưu yêu thích', message: product.name })}>
                   <Heart className="h-5 w-5" />
                 </Button>
               </div>
 
-              <Button variant="secondary" size="md" className="w-full" disabled={!product.inStock}>
+              <Button variant="secondary" size="md" className="w-full" disabled={!product.inStock} onClick={() => toast.info({ title: 'Đang chuẩn bị thanh toán', message: 'Sản phẩm đã được chọn để mua ngay.' })}>
                 Mua ngay
               </Button>
             </div>
@@ -168,7 +179,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
             {/* Share */}
             <div className="flex items-center gap-2 border-t border-[#E0E0E0] pt-4">
               <span className="text-sm text-gray-600">Chia sẻ:</span>
-              <button className="rounded-lg p-2 hover:bg-gray-200">
+              <button type="button" className="rounded-lg p-2 hover:bg-gray-200" onClick={() => toast.info({ title: 'Đã sao chép liên kết', message: 'Bạn có thể chia sẻ sản phẩm này.' })}>
                 <Share2 className="h-4 w-4 text-gray-600" />
               </button>
             </div>

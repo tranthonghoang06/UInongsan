@@ -7,15 +7,33 @@ import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { hasMinLength, isValidEmail } from '@/utils/validation';
 import { Heart, Lock, Mail, PackageCheck, ShieldCheck, ShoppingBasket } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const toast = useToast();
   const [email, setEmail] = useState('customer@example.com');
   const [password, setPassword] = useState('123456');
+  const [errors, setErrors] = useState({ email: '', password: '' });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const nextErrors = {
+      email: isValidEmail(email) ? '' : 'Vui lòng nhập email hợp lệ.',
+      password: hasMinLength(password, 6) ? '' : 'Mật khẩu phải có ít nhất 6 ký tự.',
+    };
+
+    setErrors(nextErrors);
+
+    if (nextErrors.email || nextErrors.password) {
+      toast.error({ title: 'Chưa thể đăng nhập', message: 'Anh kiểm tra lại email và mật khẩu giúp em nhé.' });
+      return;
+    }
+
+    document.cookie = 'mock-role=customer; path=/; max-age=86400; SameSite=Lax';
+    toast.success({ title: 'Đăng nhập thành công', message: 'Đang chuyển vào tài khoản khách hàng.' });
     router.push('/customer/dashboard');
   };
 
@@ -56,13 +74,14 @@ export default function LoginPage() {
             <p className="mt-1 text-sm text-gray-600">Dùng tài khoản khách hàng để tiếp tục mua sắm.</p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
             <Input
               label="Email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               icon={<Mail className="h-4 w-4" />}
+              error={errors.email}
               required
             />
             <Input
@@ -71,6 +90,7 @@ export default function LoginPage() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               icon={<Lock className="h-4 w-4" />}
+              error={errors.password}
               required
             />
             <div className="flex items-center justify-between gap-3 text-sm">

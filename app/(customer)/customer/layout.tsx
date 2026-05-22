@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import PublicHeader from '@/app/components/layout/PublicHeader';
-import { Heart, Home, MapPin, PackageCheck, UserRound } from 'lucide-react';
+import { Bell, Heart, Home, MapPin, MessageSquare, PackageCheck, UserRound } from 'lucide-react';
 
 const customerNav = [
   { label: 'Tổng quan', href: '/customer/dashboard', icon: <Home className="h-4 w-4" /> },
   { label: 'Đơn hàng', href: '/customer/orders', icon: <PackageCheck className="h-4 w-4" /> },
   { label: 'Địa chỉ', href: '/customer/addresses', icon: <MapPin className="h-4 w-4" /> },
   { label: 'Yêu thích', href: '/customer/wishlist', icon: <Heart className="h-4 w-4" /> },
+  { label: 'Đánh giá', href: '/customer/reviews', icon: <MessageSquare className="h-4 w-4" /> },
+  { label: 'Thông báo', href: '/customer/notifications', icon: <Bell className="h-4 w-4" /> },
   { label: 'Hồ sơ', href: '/customer/profile', icon: <UserRound className="h-4 w-4" /> },
 ];
 

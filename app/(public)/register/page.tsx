@@ -1,19 +1,48 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { hasMinLength, isRequired, isValidEmail, isValidVietnamPhone } from '@/utils/validation';
 import { CheckCircle2, Lock, Mail, MapPin, Phone, UserRound } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const toast = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const fullName = String(formData.get('fullName') ?? '');
+    const phone = String(formData.get('phone') ?? '');
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+    const confirmPassword = String(formData.get('confirmPassword') ?? '');
+    const accepted = formData.get('acceptedTerms') === 'on';
+
+    const nextErrors: Record<string, string> = {
+      fullName: isRequired(fullName) ? '' : 'Vui lòng nhập họ và tên.',
+      phone: isValidVietnamPhone(phone) ? '' : 'Số điện thoại chưa hợp lệ.',
+      email: isValidEmail(email) ? '' : 'Vui lòng nhập email hợp lệ.',
+      password: hasMinLength(password, 6) ? '' : 'Mật khẩu phải có ít nhất 6 ký tự.',
+      confirmPassword: password === confirmPassword ? '' : 'Mật khẩu nhập lại chưa khớp.',
+      acceptedTerms: accepted ? '' : 'Vui lòng đồng ý điều khoản trước khi đăng ký.',
+    };
+
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      toast.error({ title: 'Thông tin đăng ký chưa hợp lệ', message: 'Anh kiểm tra lại các trường được đánh dấu đỏ nhé.' });
+      return;
+    }
+
+    toast.success({ title: 'Tạo tài khoản thành công', message: 'Đang chuyển vào khu vực khách hàng.' });
     router.push('/customer/dashboard');
   };
 
@@ -51,19 +80,22 @@ export default function RegisterPage() {
             <p className="mt-1 text-sm text-gray-600">Các thông tin này dùng cho mua hàng và giao nhận.</p>
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             <div className="grid gap-4 md:grid-cols-2">
-              <Input label="Họ và tên" placeholder="Lê Khánh Hàng" icon={<UserRound className="h-4 w-4" />} required />
-              <Input label="Số điện thoại" placeholder="0900000000" icon={<Phone className="h-4 w-4" />} required />
-              <Input label="Email" type="email" placeholder="customer@example.com" icon={<Mail className="h-4 w-4" />} required />
-              <Input label="Địa chỉ mặc định" placeholder="Quận/Huyện, Tỉnh/Thành" icon={<MapPin className="h-4 w-4" />} />
-              <Input label="Mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} required />
-              <Input label="Nhập lại mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} required />
+              <Input name="fullName" label="Họ và tên" placeholder="Lê Khánh Hàng" icon={<UserRound className="h-4 w-4" />} error={errors.fullName} required />
+              <Input name="phone" label="Số điện thoại" placeholder="0900000000" icon={<Phone className="h-4 w-4" />} error={errors.phone} required />
+              <Input name="email" label="Email" type="email" placeholder="customer@example.com" icon={<Mail className="h-4 w-4" />} error={errors.email} required />
+              <Input name="address" label="Địa chỉ mặc định" placeholder="Quận/Huyện, Tỉnh/Thành" icon={<MapPin className="h-4 w-4" />} />
+              <Input name="password" label="Mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} error={errors.password} required />
+              <Input name="confirmPassword" label="Nhập lại mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} error={errors.confirmPassword} required />
             </div>
 
             <label className="flex items-start gap-3 rounded-2xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 text-sm text-gray-600">
-              <input type="checkbox" className="mt-1 h-4 w-4 accent-[#2E7D32]" required />
-              <span>Tôi đồng ý với điều khoản mua hàng, chính sách giao nhận và xử lý dữ liệu cá nhân của hệ thống.</span>
+              <input name="acceptedTerms" type="checkbox" className="mt-1 h-4 w-4 accent-[#2E7D32]" />
+              <span>
+                Tôi đồng ý với điều khoản mua hàng, chính sách giao nhận và xử lý dữ liệu cá nhân của hệ thống.
+                {errors.acceptedTerms && <span className="mt-1 block text-[#D32F2F]">{errors.acceptedTerms}</span>}
+              </span>
             </label>
 
             <div className="flex flex-col gap-3 sm:flex-row">

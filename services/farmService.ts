@@ -1,7 +1,7 @@
 import { mockFarmTrees, mockFarms } from '@/app/data/mockData';
+import { createMockCrudService } from './mockApi';
 
 export const farmService = {
-  list: () => mockFarms,
-  getById: (id: string) => mockFarms.find((farm) => farm.id === id),
+  ...createMockCrudService(mockFarms),
   getTrees: (farmId?: string) => mockFarmTrees.filter((tree) => !farmId || tree.farmId === farmId),
 };

@@ -19,3 +19,12 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   delivery: 'Vận chuyển',
   admin: 'Quản trị',
 };
+
+export const USER_ROLES: Record<UserRole, { label: string; className: string; home: string }> = {
+  customer: { label: 'Khách hàng', className: 'bg-sky-100 text-sky-700', home: '/customer/dashboard' },
+  farmer: { label: 'Nông dân', className: 'bg-green-100 text-green-700', home: '/farmer/dashboard' },
+  trader: { label: 'Thương lái', className: 'bg-amber-100 text-amber-700', home: '/trader/dashboard' },
+  seller: { label: 'Người bán', className: 'bg-emerald-100 text-emerald-700', home: '/seller/dashboard' },
+  delivery: { label: 'Vận chuyển', className: 'bg-blue-100 text-blue-700', home: '/delivery/dashboard' },
+  admin: { label: 'Quản trị', className: 'bg-purple-100 text-purple-700', home: '/admin/dashboard' },
+};

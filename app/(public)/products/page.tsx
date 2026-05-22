@@ -5,10 +5,12 @@ import PublicHeader from '@/app/components/layout/PublicHeader';
 import SearchFilterBar from '@/app/components/layout/SearchFilterBar';
 import ProductCard from '@/app/components/cards/ProductCard';
 import EmptyState from '@/app/components/layout/EmptyState';
+import { useToast } from '@/app/components/ui/ToastProvider';
 import { mockProducts } from '@/app/data/mockData';
 import { Package } from 'lucide-react';
 
 export default function ProductsPage() {
+  const toast = useToast();
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -25,8 +27,9 @@ export default function ProductsPage() {
     });
   }, [searchQuery, filters]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (productName: string) => {
     setCartCount(prev => prev + 1);
+    toast.success({ title: 'Đã thêm vào giỏ hàng', message: `${productName} đã sẵn sàng trong giỏ.` });
   };
 
   const filterOptions = [
@@ -76,7 +79,7 @@ export default function ProductsPage() {
                 <ProductCard
                   key={product.id}
                   {...product}
-                  onAddToCart={handleAddToCart}
+                  onAddToCart={() => handleAddToCart(product.name)}
                 />
               ))}
             </div>

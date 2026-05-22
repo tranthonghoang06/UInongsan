@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Textarea from '@/app/components/ui/Textarea';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { isRequired, isValidVietnamPhone } from '@/utils/validation';
 import { Headphones, MessageCircle, Phone, ShieldQuestion } from 'lucide-react';
 
 const supportCards = [
@@ -14,6 +16,35 @@ const supportCards = [
 ];
 
 export default function SupportPage() {
+  const toast = useToast();
+  const [formData, setFormData] = useState({ name: '', phone: '', title: '', message: '' });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    const nextErrors = {
+      name: isRequired(formData.name) ? '' : 'Vui lòng nhập họ và tên.',
+      phone: isValidVietnamPhone(formData.phone) ? '' : 'Số điện thoại chưa hợp lệ.',
+      title: isRequired(formData.title) ? '' : 'Vui lòng nhập tiêu đề.',
+      message: isRequired(formData.message) ? '' : 'Vui lòng mô tả nội dung cần hỗ trợ.',
+    };
+
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      toast.error({ title: 'Yêu cầu hỗ trợ chưa hợp lệ', message: 'Anh kiểm tra các trường được đánh dấu đỏ nhé.' });
+      return;
+    }
+
+    toast.success({ title: 'Đã gửi yêu cầu hỗ trợ', message: 'Đội ngũ sẽ liên hệ lại trong thời gian sớm nhất.' });
+    setFormData({ name: '', phone: '', title: '', message: '' });
+    setErrors({});
+  };
+
   return (
     <div className="min-h-screen bg-[#F0FDF4]">
       <PublicHeader />
@@ -47,12 +78,12 @@ export default function SupportPage() {
             </div>
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input label="Họ và tên" placeholder="Nhập tên của bạn" />
-                <Input label="Số điện thoại" placeholder="090..." />
+                <Input name="name" label="Họ và tên" placeholder="Nhập tên của bạn" value={formData.name} onChange={handleChange} error={errors.name} />
+                <Input name="phone" label="Số điện thoại" placeholder="090..." value={formData.phone} onChange={handleChange} error={errors.phone} />
               </div>
-              <Input label="Tiêu đề" placeholder="Ví dụ: Cần hỗ trợ theo dõi đơn hàng" />
-              <Textarea label="Nội dung" placeholder="Mô tả vấn đề bạn đang gặp..." />
-              <Button variant="primary" size="md" className="w-full sm:w-auto">Gửi yêu cầu</Button>
+              <Input name="title" label="Tiêu đề" placeholder="Ví dụ: Cần hỗ trợ theo dõi đơn hàng" value={formData.title} onChange={handleChange} error={errors.title} />
+              <Textarea name="message" label="Nội dung" placeholder="Mô tả vấn đề bạn đang gặp..." value={formData.message} onChange={handleChange} error={errors.message} />
+              <Button variant="primary" size="md" className="w-full sm:w-auto" onClick={handleSubmit}>Gửi yêu cầu</Button>
             </div>
           </div>
 

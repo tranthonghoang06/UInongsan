@@ -6,11 +6,15 @@ import DataPage from '../../_components/DataPage';
 import { mockOrders } from '@/app/data/mockData';
 import { CheckCircle, Clock, PackageCheck, ShoppingCart } from 'lucide-react';
 
-const statusText = {
+const statusText: Record<string, string> = {
   'pending-confirmation': 'Chờ xác nhận',
+  confirmed: 'Đã xác nhận',
+  'pending-payment': 'Chờ thanh toán',
+  preparing: 'Đang chuẩn bị',
   delivering: 'Đang giao',
   delivered: 'Đã giao',
   completed: 'Hoàn tất',
+  cancelled: 'Đã hủy',
 };
 
 export default function SellerOrdersPage() {
@@ -36,7 +40,7 @@ export default function SellerOrdersPage() {
         id: order.id,
         cells: {
           id: <span className="font-semibold">#{order.id}</span>,
-          status: <Badge variant={order.status} size="sm">{statusText[order.status]}</Badge>,
+          status: <Badge variant={order.status} size="sm">{statusText[order.status] ?? order.status}</Badge>,
           items: `${order.itemCount} sản phẩm`,
           amount: `${order.totalAmount.toLocaleString()}₫`,
           date: order.createdDate,

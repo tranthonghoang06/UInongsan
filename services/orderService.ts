@@ -1,7 +1,7 @@
 import { mockOrders, mockPayments } from '@/app/data/mockData';
+import { createMockCrudService } from './mockApi';
 
 export const orderService = {
-  list: () => mockOrders,
-  getById: (id: string) => mockOrders.find((order) => order.id === id),
+  ...createMockCrudService(mockOrders),
   getPayment: (orderId: string) => mockPayments.find((payment) => payment.orderId === orderId),
 };

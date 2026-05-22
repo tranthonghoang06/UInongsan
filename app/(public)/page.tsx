@@ -9,14 +9,17 @@ import FarmCard from '@/app/components/cards/FarmCard';
 import VideoCard from '@/app/components/cards/VideoCard';
 import Button from '@/app/components/ui/Button';
 import AppLogo from '@/app/components/layout/AppLogo';
+import { useToast } from '@/app/components/ui/ToastProvider';
 import { mockProducts, mockFarms, mockVideos } from '@/app/data/mockData';
 import { ArrowRight, Leaf, Truck, Award, Mail, MapPin, Phone } from 'lucide-react';
 
 export default function HomePage() {
+  const toast = useToast();
   const [cartCount, setCartCount] = useState(0);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (productName = 'Sản phẩm') => {
     setCartCount(prev => prev + 1);
+    toast.success({ title: 'Đã thêm vào giỏ hàng', message: `${productName} đã được thêm vào giỏ.` });
   };
 
   return (
@@ -145,7 +148,7 @@ export default function HomePage() {
               <ProductCard
                 key={product.id}
                 {...product}
-                onAddToCart={handleAddToCart}
+                onAddToCart={() => handleAddToCart(product.name)}
               />
             ))}
           </div>

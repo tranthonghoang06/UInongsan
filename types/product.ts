@@ -10,6 +10,9 @@ export interface Product {
   rating: number;
   reviewCount: number;
   category: string;
+  status?: 'draft' | 'active' | 'out-of-stock' | 'hidden';
+  description?: string;
+  unit?: string;
 }
 
 export interface ProductReview {

@@ -6,10 +6,13 @@ import Input from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
 import Textarea from '@/app/components/ui/Textarea';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { isRequired } from '@/utils/validation';
 import { mockCropLots } from '@/app/data/mockData';
 import { Upload } from 'lucide-react';
 
 export default function FarmingLogsPage() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     activity: '',
@@ -17,10 +20,24 @@ export default function FarmingLogsPage() {
     description: '',
     notes: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert('Nhật ký đã được lưu!');
+    const nextErrors = {
+      date: isRequired(formData.date) ? '' : 'Vui lòng chọn ngày thực hiện.',
+      cropLot: isRequired(formData.cropLot) ? '' : 'Vui lòng chọn lô trồng.',
+      activity: isRequired(formData.activity) ? '' : 'Vui lòng chọn hoạt động.',
+      description: isRequired(formData.description) ? '' : 'Vui lòng nhập mô tả chi tiết.',
+    };
+
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      toast.error({ title: 'Nhật ký chưa hợp lệ', message: 'Vui lòng bổ sung các trường bắt buộc.' });
+      return;
+    }
+
+    toast.success({ title: 'Nhật ký đã được lưu', message: 'Hoạt động canh tác mới đã được ghi nhận.' });
   };
 
   const activityOptions = [
@@ -53,6 +70,7 @@ export default function FarmingLogsPage() {
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                error={errors.date}
                 required
               />
               <Select
@@ -60,6 +78,7 @@ export default function FarmingLogsPage() {
                 value={formData.cropLot}
                 onChange={(e) => setFormData({ ...formData, cropLot: e.target.value })}
                 options={mockCropLots.map(lot => ({ value: lot.id, label: `${lot.id} - ${lot.cropName}` }))}
+                error={errors.cropLot}
                 required
               />
             </div>
@@ -70,6 +89,7 @@ export default function FarmingLogsPage() {
               value={formData.activity}
               onChange={(e) => setFormData({ ...formData, activity: e.target.value })}
               options={activityOptions}
+              error={errors.activity}
               required
             />
 
@@ -79,6 +99,7 @@ export default function FarmingLogsPage() {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Mô tả chi tiết hoạt động đã thực hiện..."
+              error={errors.description}
               required
             />
 
@@ -109,7 +130,11 @@ export default function FarmingLogsPage() {
               <Button variant="primary" size="md" className="flex-1" onClick={handleSubmit}>
                 Lưu nhật ký
               </Button>
-              <Button variant="outline" size="md" className="flex-1">
+              <Button variant="outline" size="md" className="flex-1" onClick={() => {
+                setFormData({ date: new Date().toISOString().split('T')[0], activity: '', cropLot: '', description: '', notes: '' });
+                setErrors({});
+                toast.info({ title: 'Đã xóa nội dung nhập', message: 'Form nhật ký đã được làm mới.' });
+              }}>
                 Xóa
               </Button>
             </div>

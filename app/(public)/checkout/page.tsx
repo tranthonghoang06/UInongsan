@@ -7,10 +7,13 @@ import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
 import Textarea from '@/app/components/ui/Textarea';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { isRequired, isValidEmail, isValidVietnamPhone } from '@/utils/validation';
 import { mockCartItems } from '@/app/data/mockData';
 import { CheckCircle } from 'lucide-react';
 
 export default function CheckoutPage() {
+  const toast = useToast();
   const [step, setStep] = useState<'shipping' | 'payment' | 'confirm'>('shipping');
   const [formData, setFormData] = useState({
     fullName: '',
@@ -22,6 +25,7 @@ export default function CheckoutPage() {
     notes: '',
   });
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'transfer' | 'ewallet'>('cod');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal > 200000 ? 0 : 25000;
@@ -30,14 +34,31 @@ export default function CheckoutPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = () => {
     if (step === 'shipping') {
-      if (formData.fullName && formData.phone && formData.address) {
-        setStep('payment');
+      const nextErrors = {
+        fullName: isRequired(formData.fullName) ? '' : 'Vui lòng nhập họ và tên.',
+        phone: isValidVietnamPhone(formData.phone) ? '' : 'Số điện thoại chưa hợp lệ.',
+        email: !formData.email || isValidEmail(formData.email) ? '' : 'Email chưa hợp lệ.',
+        address: isRequired(formData.address) ? '' : 'Vui lòng nhập địa chỉ giao hàng.',
+        district: isRequired(formData.district) ? '' : 'Vui lòng chọn quận/huyện.',
+        city: isRequired(formData.city) ? '' : 'Vui lòng chọn tỉnh/thành phố.',
+      };
+
+      setErrors(nextErrors);
+
+      if (Object.values(nextErrors).some(Boolean)) {
+        toast.error({ title: 'Thiếu thông tin giao hàng', message: 'Anh bổ sung các trường được đánh dấu đỏ nhé.' });
+        return;
       }
+
+      toast.success({ title: 'Đã lưu thông tin giao hàng', message: 'Mời anh chọn phương thức thanh toán.' });
+      setStep('payment');
     } else if (step === 'payment') {
+      toast.success({ title: 'Đặt hàng thành công', message: 'Đơn hàng demo đã được tạo.' });
       setStep('confirm');
     }
   };
@@ -115,6 +136,7 @@ export default function CheckoutPage() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
+                      error={errors.fullName}
                       required
                     />
                     <Input
@@ -122,6 +144,7 @@ export default function CheckoutPage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
+                      error={errors.phone}
                       required
                     />
                   </div>
@@ -131,12 +154,14 @@ export default function CheckoutPage() {
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
+                    error={errors.email}
                   />
                   <Input
                     label="Địa chỉ"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
+                    error={errors.address}
                     required
                   />
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -145,6 +170,8 @@ export default function CheckoutPage() {
                       name="district"
                       value={formData.district}
                       onChange={handleInputChange}
+                      error={errors.district}
+                      required
                       options={[
                         { value: 'Hoan Kiem', label: 'Hoàn Kiếm' },
                         { value: 'Dong Da', label: 'Đống Đa' },
@@ -155,6 +182,8 @@ export default function CheckoutPage() {
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
+                      error={errors.city}
+                      required
                       options={[
                         { value: 'Ha Noi', label: 'Hà Nội' },
                         { value: 'Ho Chi Minh', label: 'TP HCM' },
@@ -183,7 +212,10 @@ export default function CheckoutPage() {
                       name="payment"
                       value="cod"
                       checked={paymentMethod === 'cod'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'cod')}
+                      onChange={(e) => {
+                        setPaymentMethod(e.target.value as 'cod');
+                        toast.info({ title: 'Đã chọn thanh toán COD' });
+                      }}
                       className="mr-3"
                     />
                     <div>
@@ -198,7 +230,10 @@ export default function CheckoutPage() {
                       name="payment"
                       value="transfer"
                       checked={paymentMethod === 'transfer'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'transfer')}
+                      onChange={(e) => {
+                        setPaymentMethod(e.target.value as 'transfer');
+                        toast.info({ title: 'Đã chọn chuyển khoản ngân hàng' });
+                      }}
                       className="mr-3"
                     />
                     <div>
@@ -213,7 +248,10 @@ export default function CheckoutPage() {
                       name="payment"
                       value="ewallet"
                       checked={paymentMethod === 'ewallet'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'ewallet')}
+                      onChange={(e) => {
+                        setPaymentMethod(e.target.value as 'ewallet');
+                        toast.info({ title: 'Đã chọn ví điện tử' });
+                      }}
                       className="mr-3"
                     />
                     <div>

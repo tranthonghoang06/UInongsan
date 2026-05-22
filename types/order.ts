@@ -15,4 +15,15 @@ export interface Order {
   itemCount: number;
   createdDate: string;
   estimatedDelivery?: string;
+  customerId?: string;
+  items?: OrderItem[];
+}
+
+export interface OrderItem {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  unit: string;
 }

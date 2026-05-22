@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { isRequired, isValidEmail, isValidVietnamPhone } from '@/utils/validation';
 import { Camera, ShieldCheck, Smartphone, User } from 'lucide-react';
 
 interface ProfilePageProps {
@@ -11,6 +13,7 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ roleLabel }: ProfilePageProps) {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: 'Nguyễn Văn A',
     phone: '0901234567',
@@ -18,9 +21,30 @@ export default function ProfilePage({ roleLabel }: ProfilePageProps) {
     address: 'Xã Minh Châu, huyện Ba Vì, Hà Nội',
     province: 'Hà Nội',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const updateField = (key: keyof typeof formData, value: string) => {
     setFormData((current) => ({ ...current, [key]: value }));
+    setErrors((current) => ({ ...current, [key]: '' }));
+  };
+
+  const handleSave = () => {
+    const nextErrors = {
+      name: isRequired(formData.name) ? '' : 'Vui lòng nhập họ và tên.',
+      phone: isValidVietnamPhone(formData.phone) ? '' : 'Số điện thoại chưa hợp lệ.',
+      email: isValidEmail(formData.email) ? '' : 'Email chưa hợp lệ.',
+      address: isRequired(formData.address) ? '' : 'Vui lòng nhập địa chỉ.',
+      province: isRequired(formData.province) ? '' : 'Vui lòng chọn tỉnh/thành phố.',
+    };
+
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      toast.error({ title: 'Hồ sơ chưa hợp lệ', message: 'Vui lòng kiểm tra các trường bắt buộc.' });
+      return;
+    }
+
+    toast.success({ title: 'Đã lưu thay đổi', message: 'Thông tin tài khoản đã được cập nhật.' });
   };
 
   return (
@@ -37,7 +61,7 @@ export default function ProfilePage({ roleLabel }: ProfilePageProps) {
               <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#DCFCE7] text-[#166534] sm:h-24 sm:w-24 sm:rounded-3xl">
                 <User className="h-10 w-10 sm:h-12 sm:w-12" />
               </div>
-              <button className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[#16A34A] text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl" type="button">
+              <button className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[#16A34A] text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl" type="button" onClick={() => toast.info({ title: 'Đã chọn cập nhật ảnh đại diện' })}>
                 <Camera className="h-5 w-5" />
               </button>
             </div>
@@ -62,15 +86,17 @@ export default function ProfilePage({ roleLabel }: ProfilePageProps) {
           <h2 className="mb-4 text-lg font-bold text-[#163B24] sm:mb-5 sm:text-xl">Thông tin cá nhân</h2>
           <div className="space-y-3.5 sm:space-y-4">
             <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-4">
-              <Input label="Họ và tên" value={formData.name} onChange={(event) => updateField('name', event.target.value)} />
-              <Input label="Số điện thoại" value={formData.phone} onChange={(event) => updateField('phone', event.target.value)} />
+              <Input label="Họ và tên" value={formData.name} onChange={(event) => updateField('name', event.target.value)} error={errors.name} required />
+              <Input label="Số điện thoại" value={formData.phone} onChange={(event) => updateField('phone', event.target.value)} error={errors.phone} required />
             </div>
-            <Input label="Email" type="email" value={formData.email} onChange={(event) => updateField('email', event.target.value)} />
-            <Input label="Địa chỉ" value={formData.address} onChange={(event) => updateField('address', event.target.value)} />
+            <Input label="Email" type="email" value={formData.email} onChange={(event) => updateField('email', event.target.value)} error={errors.email} required />
+            <Input label="Địa chỉ" value={formData.address} onChange={(event) => updateField('address', event.target.value)} error={errors.address} required />
             <Select
               label="Tỉnh/Thành phố"
               value={formData.province}
               onChange={(event) => updateField('province', event.target.value)}
+              error={errors.province}
+              required
               options={[
                 { value: 'Hà Nội', label: 'Hà Nội' },
                 { value: 'Đà Lạt', label: 'Đà Lạt' },
@@ -79,8 +105,8 @@ export default function ProfilePage({ roleLabel }: ProfilePageProps) {
               ]}
             />
             <div className="grid gap-2.5 pt-1 sm:grid-cols-2 sm:gap-3 sm:pt-2">
-              <Button variant="primary" size="md">Lưu thay đổi</Button>
-              <Button variant="outline" size="md">Đổi mật khẩu</Button>
+              <Button type="button" variant="primary" size="md" onClick={handleSave}>Lưu thay đổi</Button>
+              <Button type="button" variant="outline" size="md" onClick={() => toast.info({ title: 'Đang mở đổi mật khẩu' })}>Đổi mật khẩu</Button>
             </div>
           </div>
         </section>

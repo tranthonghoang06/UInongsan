@@ -1,37 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hệ thống quản lý vườn nông sản và thương mại hóa nông sản
 
-## Getting Started
+Frontend demo cho nền tảng quản lý chuỗi nông sản: quản lý nhà vườn, lô trồng, nhật ký canh tác, truy xuất nguồn gốc QR, mua bán nông sản, đơn hàng, vận chuyển và quản trị hệ thống.
 
-First, run the development server:
+## Công nghệ
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js App Router 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Mock data trong `app/data/mockData.ts`
+- Service layer mock trong `services/`, sẵn sàng thay bằng API backend
+
+## Cấu trúc thư mục chính
+
+```text
+app/
+├── (public)/       # Trang bán hàng, sản phẩm, nhà vườn, giỏ hàng, checkout, auth
+├── (customer)/     # Khu vực khách hàng tại /customer/*
+├── (dashboard)/    # Dashboard admin, farmer, seller, trader, delivery
+├── components/     # ui, layout, cards, business
+└── data/mockData.ts
+constants/          # roles, routes, status, payment, farming activities
+hooks/              # useDebouncedValue, usePagination, useMockAuth, useCart
+lib/                # axios, auth, cn
+services/           # mock CRUD services
+types/              # TypeScript domain types
+utils/              # format, validators, qr, date
+public/             # logo, images, placeholder
+proxy.ts            # bảo vệ route theo vai trò cho Next.js 16
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Lưu ý: Next.js 16 đã đổi `middleware.ts` thành `proxy.ts`, nên project dùng `proxy.ts` để build đúng chuẩn hiện tại.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vai trò
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Admin: quản trị hệ thống
+- Nông dân: quản lý trang trại, lô trồng, cây trồng, nhật ký, thu hoạch, QR
+- Người bán: quản lý sản phẩm, tồn kho, đơn hàng, doanh thu
+- Thương lái: tìm nguồn hàng, gửi yêu cầu thu mua, thương lượng, đơn mua sỉ
+- Khách hàng: mua hàng, đơn hàng, địa chỉ, yêu thích, đánh giá
+- Vận chuyển: nhận đơn giao, cập nhật trạng thái, bằng chứng giao hàng, hoàn hàng
 
-## Learn More
+## Tài khoản mock
 
-To learn more about Next.js, take a look at the following resources:
+| Vai trò | Email | Mật khẩu |
+| --- | --- | --- |
+| Khách hàng | customer@example.com | 123456 |
+| Nông dân | farmer@example.com | 123456 |
+| Người bán | seller@example.com | 123456 |
+| Thương lái | trader@example.com | 123456 |
+| Vận chuyển | delivery@example.com | 123456 |
+| Admin | admin@example.com | 123456 |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Đăng nhập khách hàng tại `/login`, đăng nhập nhân sự/đối tác tại `/staff-login`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Chức năng demo
 
-## Deploy on Vercel
+- Public: trang chủ, danh sách/chi tiết sản phẩm, nhà vườn, truy xuất QR, giỏ hàng, checkout, lịch sử đơn, hỗ trợ.
+- Customer: hồ sơ, đơn hàng, địa chỉ, yêu thích, đánh giá, thông báo.
+- Admin: dashboard, người dùng, sản phẩm, đơn hàng, khiếu nại, danh mục, giống cây, vai trò, thanh toán, vận chuyển, thống kê, cài đặt.
+- Farmer: dashboard, trang trại, lô trồng, cây trồng, nhật ký canh tác, phân bón, thuốc BVTV, thu hoạch, QR, yêu cầu thu mua.
+- Seller: sản phẩm, ảnh/video, tồn kho, đơn hàng, yêu cầu thu mua, doanh thu.
+- Trader: nguồn hàng, so sánh, yêu cầu thu mua, thương lượng, đơn mua sỉ, lịch sử.
+- Delivery: đơn giao, cập nhật trạng thái, bằng chứng giao hàng, đơn đang giao, hoàn tất, thất bại, hoàn hàng.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Cài đặt và chạy local
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Quan_Ly_Nong_San_Fe
+```bash
+npm install
+npm run dev
+npm run lint
+npm run build
+```
+
+Mở `http://localhost:3000` để xem UI demo.
+
+## Ghi chú phát triển
+
+Hiện tại project dùng mock data, chưa kết nối backend thật. Khi có backend, ưu tiên thay logic trong `services/*Service.ts` bằng API thật và giữ nguyên component/page để giảm ảnh hưởng UI.

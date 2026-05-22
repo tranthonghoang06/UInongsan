@@ -8,6 +8,8 @@ import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { hasMinLength, isValidEmail } from '@/utils/validation';
 import { BarChart3, Lock, Mail, ShieldCheck, Sprout, Truck, Users } from 'lucide-react';
 
 const roleOptions = [
@@ -27,12 +29,29 @@ const demoAccounts = [
 
 export default function StaffLoginPage() {
   const router = useRouter();
+  const toast = useToast();
   const [role, setRole] = useState('farmer');
   const [email, setEmail] = useState('farmer@example.com');
   const [password, setPassword] = useState('123456');
+  const [errors, setErrors] = useState({ role: '', email: '', password: '' });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const nextErrors = {
+      role: role ? '' : 'Vui lòng chọn vai trò.',
+      email: isValidEmail(email) ? '' : 'Vui lòng nhập email hợp lệ.',
+      password: hasMinLength(password, 6) ? '' : 'Mật khẩu phải có ít nhất 6 ký tự.',
+    };
+
+    setErrors(nextErrors);
+
+    if (nextErrors.role || nextErrors.email || nextErrors.password) {
+      toast.error({ title: 'Thông tin chưa hợp lệ', message: 'Vui lòng kiểm tra các trường bắt buộc.' });
+      return;
+    }
+
+    document.cookie = `mock-role=${role}; path=/; max-age=86400; SameSite=Lax`;
+    toast.success({ title: 'Đăng nhập thành công', message: 'Đang mở dashboard vận hành.' });
     router.push(`/${role}/dashboard`);
   };
 
@@ -40,6 +59,8 @@ export default function StaffLoginPage() {
     setRole(account.role);
     setEmail(account.email);
     setPassword('123456');
+    setErrors({ role: '', email: '', password: '' });
+    toast.info({ title: 'Đã điền tài khoản demo', message: `Vai trò ${account.label} đã sẵn sàng để đăng nhập.` });
   };
 
   return (
@@ -79,10 +100,10 @@ export default function StaffLoginPage() {
             <p className="mt-1 text-sm text-gray-600">Chọn vai trò để vào dashboard tương ứng.</p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <Select label="Vai trò" value={role} onChange={(event) => setRole(event.target.value)} options={roleOptions} required />
-            <Input label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} icon={<Mail className="h-4 w-4" />} required />
-            <Input label="Mật khẩu" type="password" value={password} onChange={(event) => setPassword(event.target.value)} icon={<Lock className="h-4 w-4" />} required />
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+            <Select label="Vai trò" value={role} onChange={(event) => setRole(event.target.value)} options={roleOptions} error={errors.role} required />
+            <Input label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} icon={<Mail className="h-4 w-4" />} error={errors.email} required />
+            <Input label="Mật khẩu" type="password" value={password} onChange={(event) => setPassword(event.target.value)} icon={<Lock className="h-4 w-4" />} error={errors.password} required />
             <Button type="submit" variant="primary" size="md" className="w-full">
               Vào dashboard vận hành
             </Button>

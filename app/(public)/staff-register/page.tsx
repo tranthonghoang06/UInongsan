@@ -9,6 +9,8 @@ import Input from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
 import Textarea from '@/app/components/ui/Textarea';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { hasMinLength, isRequired, isValidEmail, isValidVietnamPhone } from '@/utils/validation';
 import { Building2, CheckCircle2, Lock, Mail, MapPin, Phone, UserRound } from 'lucide-react';
 
 const roleOptions = [
@@ -20,10 +22,36 @@ const roleOptions = [
 
 export default function StaffRegisterPage() {
   const router = useRouter();
+  const toast = useToast();
   const [role, setRole] = useState('farmer');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const fullName = String(formData.get('fullName') ?? '');
+    const phone = String(formData.get('phone') ?? '');
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+    const confirmPassword = String(formData.get('confirmPassword') ?? '');
+
+    const nextErrors: Record<string, string> = {
+      fullName: isRequired(fullName) ? '' : 'Vui lòng nhập họ và tên.',
+      phone: isValidVietnamPhone(phone) ? '' : 'Số điện thoại chưa hợp lệ.',
+      email: isValidEmail(email) ? '' : 'Vui lòng nhập email hợp lệ.',
+      role: role ? '' : 'Vui lòng chọn vai trò.',
+      password: hasMinLength(password, 6) ? '' : 'Mật khẩu phải có ít nhất 6 ký tự.',
+      confirmPassword: password === confirmPassword ? '' : 'Mật khẩu nhập lại chưa khớp.',
+    };
+
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      toast.error({ title: 'Thông tin đối tác chưa hợp lệ', message: 'Vui lòng kiểm tra các trường bắt buộc.' });
+      return;
+    }
+
+    toast.success({ title: 'Tạo tài khoản vận hành thành công', message: 'Đang chuyển vào dashboard theo vai trò.' });
     router.push(`/${role}/dashboard`);
   };
 
@@ -61,16 +89,16 @@ export default function StaffRegisterPage() {
             <p className="mt-1 text-sm text-gray-600">Các trường này dùng để dựng hồ sơ demo và điều hướng vào dashboard.</p>
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             <div className="grid gap-4 md:grid-cols-2">
-              <Input label="Họ và tên" placeholder="Nguyễn Văn A" icon={<UserRound className="h-4 w-4" />} required />
-              <Input label="Số điện thoại" placeholder="0900000000" icon={<Phone className="h-4 w-4" />} required />
-              <Input label="Email" type="email" placeholder="email@example.com" icon={<Mail className="h-4 w-4" />} required />
-              <Select label="Vai trò vận hành" value={role} onChange={(event) => setRole(event.target.value)} options={roleOptions} required />
-              <Input label="Tên đơn vị / nhà vườn" placeholder="Vườn Xanh 1" icon={<Building2 className="h-4 w-4" />} />
-              <Input label="Khu vực hoạt động" placeholder="Hà Nội" icon={<MapPin className="h-4 w-4" />} />
-              <Input label="Mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} required />
-              <Input label="Nhập lại mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} required />
+              <Input name="fullName" label="Họ và tên" placeholder="Nguyễn Văn A" icon={<UserRound className="h-4 w-4" />} error={errors.fullName} required />
+              <Input name="phone" label="Số điện thoại" placeholder="0900000000" icon={<Phone className="h-4 w-4" />} error={errors.phone} required />
+              <Input name="email" label="Email" type="email" placeholder="email@example.com" icon={<Mail className="h-4 w-4" />} error={errors.email} required />
+              <Select label="Vai trò vận hành" value={role} onChange={(event) => setRole(event.target.value)} options={roleOptions} error={errors.role} required />
+              <Input name="businessName" label="Tên đơn vị / nhà vườn" placeholder="Vườn Xanh 1" icon={<Building2 className="h-4 w-4" />} />
+              <Input name="region" label="Khu vực hoạt động" placeholder="Hà Nội" icon={<MapPin className="h-4 w-4" />} />
+              <Input name="password" label="Mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} error={errors.password} required />
+              <Input name="confirmPassword" label="Nhập lại mật khẩu" type="password" icon={<Lock className="h-4 w-4" />} error={errors.confirmPassword} required />
             </div>
 
             <Textarea label="Mô tả ngắn" placeholder="Ví dụ: Chuyên rau hữu cơ, có 3ha canh tác tại ngoại thành Hà Nội..." rows={4} />

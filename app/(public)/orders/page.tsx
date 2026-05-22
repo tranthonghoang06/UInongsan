@@ -5,6 +5,8 @@ import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Input from '@/app/components/ui/Input';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
+import { isRequired } from '@/utils/validation';
 import { CheckCircle, ClipboardList, Package, Truck } from 'lucide-react';
 
 const steps = [
@@ -15,7 +17,21 @@ const steps = [
 ];
 
 export default function OrdersPage() {
+  const toast = useToast();
   const [orderCode, setOrderCode] = useState('ORD002');
+  const [error, setError] = useState('');
+
+  const handleLookup = () => {
+    const nextError = isRequired(orderCode) ? '' : 'Vui lòng nhập mã đơn hàng.';
+    setError(nextError);
+
+    if (nextError) {
+      toast.error({ title: 'Chưa có mã đơn hàng', message: 'Anh nhập mã đơn để tra cứu trạng thái nhé.' });
+      return;
+    }
+
+    toast.success({ title: 'Đã tra cứu đơn hàng', message: `Đang hiển thị trạng thái của ${orderCode}.` });
+  };
 
   return (
     <div className="min-h-screen bg-[#F0FDF4]">
@@ -28,8 +44,8 @@ export default function OrdersPage() {
 
         <section className="rounded-2xl border border-[#BBF7D0] bg-white p-3.5 shadow-sm shadow-green-100 sm:p-6">
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-            <Input label="Mã đơn hàng" value={orderCode} onChange={(event) => setOrderCode(event.target.value)} placeholder="Ví dụ: ORD002" />
-            <Button variant="primary" size="md" className="self-end">Tra cứu</Button>
+            <Input label="Mã đơn hàng" value={orderCode} onChange={(event) => setOrderCode(event.target.value)} placeholder="Ví dụ: ORD002" error={error} />
+            <Button variant="primary" size="md" className="self-end" onClick={handleLookup}>Tra cứu</Button>
           </div>
         </section>
 

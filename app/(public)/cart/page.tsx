@@ -6,22 +6,33 @@ import Image from 'next/image';
 import PublicHeader from '@/app/components/layout/PublicHeader';
 import Button from '@/app/components/ui/Button';
 import Badge from '@/app/components/ui/Badge';
+import { useToast } from '@/app/components/ui/ToastProvider';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { mockCartItems } from '@/app/data/mockData';
 
 export default function CartPage() {
+  const toast = useToast();
   const [items, setItems] = useState(mockCartItems);
 
   const handleQuantityChange = (id: string, delta: number) => {
+    const item = items.find((cartItem) => cartItem.id === id);
     setItems(items.map(item =>
       item.id === id
         ? { ...item, quantity: Math.max(1, item.quantity + delta) }
         : item
     ));
+    if (item) {
+      toast.info({
+        title: delta > 0 ? 'Đã tăng số lượng' : 'Đã giảm số lượng',
+        message: item.name,
+      });
+    }
   };
 
   const handleRemove = (id: string) => {
+    const item = items.find((cartItem) => cartItem.id === id);
     setItems(items.filter(item => item.id !== id));
+    toast.warning({ title: 'Đã xóa khỏi giỏ hàng', message: item?.name });
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -62,6 +73,7 @@ export default function CartPage() {
                     {/* Quantity */}
                     <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => handleQuantityChange(item.id, -1)}
                         className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#BBF7D0] bg-[#F0FDF4]"
                       >
@@ -69,6 +81,7 @@ export default function CartPage() {
                       </button>
                       <span className="w-9 text-center text-lg font-bold">{item.quantity}</span>
                       <button
+                        type="button"
                         onClick={() => handleQuantityChange(item.id, 1)}
                         className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#BBF7D0] bg-[#F0FDF4]"
                       >
@@ -80,6 +93,7 @@ export default function CartPage() {
                   {/* Actions */}
                   <div className="col-span-2 flex items-center justify-between border-t border-[#DCFCE7] pt-3 sm:border-0 sm:pt-0 sm:flex-col sm:items-end">
                     <button
+                      type="button"
                       onClick={() => handleRemove(item.id)}
                       className="text-red-600 hover:text-red-700"
                     >

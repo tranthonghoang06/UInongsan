@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 import DashboardSidebar from '@/app/components/layout/DashboardSidebar';
+import DashboardHeader from '@/app/components/layout/DashboardHeader';
 
 export default function TraderDashboardLayout({
   children,
@@ -11,6 +12,7 @@ export default function TraderDashboardLayout({
     <div className="min-h-screen bg-[#F0FDF4] md:flex md:h-screen">
       <DashboardSidebar userRole="trader" />
       <main className="min-h-screen pb-32 md:flex-1 md:overflow-auto md:pb-0">
+        <DashboardHeader role="trader" />
         {children}
       </main>
     </div>
