@@ -11,7 +11,7 @@ const footerLinks = [
 
 export default function PublicFooter() {
   return (
-    <footer className="border-t border-[#BBF7D0] bg-white">
+    <footer className="border-t border-[#BBF7D0] bg-[#EAF8E6]">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 md:grid-cols-[1.2fr_0.8fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
