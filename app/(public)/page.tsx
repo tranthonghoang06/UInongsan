@@ -229,7 +229,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
+      {false && (
       <footer className="bg-[#EAF8E6] pb-6 text-[#163B24]">
         <div className="mx-auto max-w-7xl px-4">
           <div className="border-t border-[#BBF7D0] px-1 py-7 sm:px-0">
@@ -278,6 +278,7 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }
